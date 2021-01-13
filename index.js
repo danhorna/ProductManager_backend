@@ -7,7 +7,7 @@ const app = express();
 app.set('port', process.env.PORT || 3000);
 
 //middlewares
-
+app.use(express.json());    //permitió recibir json desde un POST
 
 //routes
 app.use('/api/products', require('./routes/products'));
