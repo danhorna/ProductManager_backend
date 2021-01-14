@@ -5,7 +5,8 @@ const MONGODB_URI = `mongodb://${CERRAJERIA_BACKEND_HOST}/${CERRAJERIA_BACKEND_D
 
 mongoose.connect(MONGODB_URI, {
     useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useFindAndModify: false
 })
     .then(db => console.log('Db conectada'))
     .catch(err => console.log(err))

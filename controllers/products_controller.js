@@ -1,92 +1,46 @@
 const productsCtrl = {};
+const { getAllProducts, findProductByCode, updateProductPriceByCode, newProduct } = require('../helpers/products_utils');
+const { newHistorical, newPriceToHistorical } = require('../helpers/historical_utils');
 
-const Product = require('../models/Product');
-const Historical = require('../models/Historical');
-const { HistoricalPricesModel } = require('../models/HistoricalPrices')
-
-productsCtrl.getAllProducts = async (req,res) => {
-    const products = await Product.find();
+productsCtrl.getAllProducts = async (req, res) => {
+    const products = await getAllProducts();
     res.json(products);
 }
 
-function newProduct(product) {
-    const { code, name, price } = product;
-    const newProduct = new Product({
-        code,
-        name,
-        price
-    });
-    return newProduct.save();
-}
-
-function newHistorical(product){
-    const { code, price } = product;
-    const newHistoricalPrice = new HistoricalPricesModel({
-        price,
-        date: new Date()
-    });
-    const newHistorical = new Historical({
-        code,
-        historicalPrices: [newHistoricalPrice]
-    });
-    return newHistorical.save()
-}
-
-function addHistoricalPrice(product){
-    const { code, price } = product;
-    const newHistoricalPrice = new HistoricalPricesModel({
-        price,
-        date: new Date()
-    });
-    return Historical.findOneAndUpdate(
-        { code }, 
-        { $push: 
-            { historicalPrices: newHistoricalPrice} 
-        })
-}
-
-function updateProductPrice(product){
-    const { code, price } = product;
-    return Product.findOneAndUpdate(
-        { code },
-        { price }
-    )
-}
-
-productsCtrl.newList = async (req,res) => {
+productsCtrl.newList = async (req, res) => {
     const { products } = req.body;
     let created = 0;
     let creationErrors = 0;
     let updated = 0;
     let updateErrors = 0;
     let withoutchanges = 0;
-    await Promise.all(products.map(async (product, index) =>{
-        let productdb = await Product.find({code:product.code});
-        if (productdb.length > 0){
+    await Promise.all(products.map(async (product) => {
+        let productdb = await findProductByCode(product.code);
+        if (productdb.length > 0) {
             if (productdb[0].price == product.price)
                 withoutchanges++;
-            else{
-                try{
-                    await addHistoricalPrice(product);
-                    await updateProductPrice(product);
+            else {
+                try {
+                    await newPriceToHistorical(product.code, product.price);
+                    await updateProductPriceByCode(product.code, product.price);
                     updated++;
                 }
-                catch(err){
+                catch (err) {
                     updateErrors++;
                 }
             }
         }
-        else{
-            try{
+        else {
+            try {
                 await newProduct(product);
-                await newHistorical(product);
+                await newHistorical(product.code, product.price);
                 created++;
             }
-            catch(err){
+            catch (err) {
                 creationErrors++;
             }
         }
-        
+
     }));
     res.json({
         "Creados": created,

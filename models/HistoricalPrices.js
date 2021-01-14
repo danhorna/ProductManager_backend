@@ -11,4 +11,4 @@ const HistoricalPricesSchema = new Schema({
     }
 })
 module.exports.HistoricalPricesSchema = HistoricalPricesSchema;
-module.exports.HistoricalPricesModel = model('HistoricalPrices', HistoricalPricesSchema);
+module.exports.HistoricalPrice = model('HistoricalPrices', HistoricalPricesSchema);
