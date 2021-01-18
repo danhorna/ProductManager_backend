@@ -2,12 +2,15 @@ require('dotenv').config();
 require('./database');
 const express = require("express");
 const app = express();
+const cors = require('cors');
 
 //settings
 app.set('port', process.env.PORT || 3000);
 
 //middlewares
-app.use(express.json());    //permitió recibir json desde un POST
+app.use(cors());
+app.use(express.json({limit: '50mb'}));    //permitió recibir json desde un POST
+app.use(express.urlencoded({limit: '50mb'}));
 
 //routes
 app.use('/api/products', require('./routes/products'));
