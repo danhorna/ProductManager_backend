@@ -29,6 +29,10 @@ historicalFunctions.newPriceToHistorical = (code, price, iva) => {
         })
 }
 
+historicalFunctions.getProductHistorical = (code) => {
+    return Historical.findOne({code})
+}
+
 
 
 module.exports = historicalFunctions

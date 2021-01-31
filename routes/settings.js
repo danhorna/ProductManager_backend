@@ -5,4 +5,4 @@ const { getSettings } = require('../controllers/settings_controller');
 router.route('/')
     .get(getSettings)
 
-module.exports = router
+module.exports = router;
