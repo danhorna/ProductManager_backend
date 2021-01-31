@@ -5,12 +5,17 @@ productFunctions.getAllProducts = () => {
     return Product.find()
 }
 
+productFunctions.getProductById = (productid) => {
+    return Product.findOne({_id: productid})
+}
+
 productFunctions.newProduct = (product) => {
-    const { code, name, price } = product;
+    const { code, name, price, iva } = product;
     const newProduct = new Product({
         code,
         name,
-        price
+        price,
+        iva
     });
     return newProduct.save();
 }
@@ -19,10 +24,10 @@ productFunctions.findProductByCode = (productCode) => {
     return Product.find({ code: productCode });
 }
 
-productFunctions.updateProductPriceByCode = (code, price) => {
+productFunctions.updateProductPriceByCode = (code, price, iva) => {
     return Product.findOneAndUpdate(
         { code },
-        { price }
+        { price, iva }
     )
 }
 

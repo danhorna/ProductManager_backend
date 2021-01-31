@@ -1,10 +1,15 @@
 const productsCtrl = {};
-const { getAllProducts, findProductByCode, updateProductPriceByCode, newProduct } = require('../helpers/products_utils');
+const { getAllProducts, findProductByCode, updateProductPriceByCode, newProduct, getProductById } = require('../helpers/products_utils');
 const { newHistorical, newPriceToHistorical } = require('../helpers/historical_utils');
 
 productsCtrl.getAllProducts = async (req, res) => {
     const products = await getAllProducts();
     res.json(products);
+}
+
+productsCtrl.getProductById = async (req, res) => {
+    const product = await getProductById(req.params.id)
+    res.json(product)
 }
 
 productsCtrl.newList = async (req, res) => {
@@ -17,12 +22,12 @@ productsCtrl.newList = async (req, res) => {
     await Promise.all(products.map(async (product) => {
         let productdb = await findProductByCode(product.code);
         if (productdb.length > 0) {
-            if (productdb[0].price == product.price)
+            if (productdb[0].price == product.price && productdb[0].iva == product.iva)
                 withoutchanges++;
             else {
                 try {
-                    await newPriceToHistorical(product.code, product.price);
-                    await updateProductPriceByCode(product.code, product.price);
+                    await newPriceToHistorical(product.code, product.price, product.iva);
+                    await updateProductPriceByCode(product.code, product.price, product.iva);
                     updated++;
                 }
                 catch (err) {
@@ -33,7 +38,7 @@ productsCtrl.newList = async (req, res) => {
         else {
             try {
                 await newProduct(product);
-                await newHistorical(product.code, product.price);
+                await newHistorical(product.code, product.price, product.iva);
                 created++;
             }
             catch (err) {
@@ -43,11 +48,11 @@ productsCtrl.newList = async (req, res) => {
 
     }));
     res.json({
-        "Creados": created,
-        "Errores al crear": creationErrors,
-        "Actualizados": updated,
-        "Errores al actualizar": updateErrors,
-        "Sin cambios": withoutchanges
+        created,
+        creationErrors,
+        updated,
+        updateErrors,
+        withoutchanges
     })
 }
 

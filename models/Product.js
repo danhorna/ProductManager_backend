@@ -12,6 +12,10 @@ const ProductSchema = new Schema({
     price: {
         type: Number,
         required: true
+    },
+    iva: {
+        type: Number,
+        required: true
     }
 })
 

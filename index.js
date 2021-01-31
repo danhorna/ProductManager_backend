@@ -14,6 +14,7 @@ app.use(express.urlencoded({limit: '50mb'}));
 
 //routes
 app.use('/api/products', require('./routes/products'));
+app.use('/api/settings', require('./routes/settings'));
 
 //initializing
 app.listen(app.get('port'), () => {

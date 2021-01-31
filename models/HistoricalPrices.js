@@ -8,6 +8,10 @@ const HistoricalPricesSchema = new Schema({
     date: {
         type: Date,
         required: true
+    },
+    iva: {
+        type: Number,
+        required: true
     }
 })
 module.exports.HistoricalPricesSchema = HistoricalPricesSchema;
