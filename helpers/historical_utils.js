@@ -2,35 +2,35 @@ const historicalFunctions = {};
 const Historical = require('../models/Historical');
 const { HistoricalPrice } = require('../models/HistoricalPrices');
 
-historicalFunctions.newHistorical = (code, price, iva) => {
+historicalFunctions.newHistorical = (product_id, price, iva) => {
     const newHistoricalPrice = new HistoricalPrice({
         price,
         iva,
         date: new Date()
     });
     const newHistorical = new Historical({
-        code,
+        product_id,
         historicalPrices: [newHistoricalPrice]
     });
     return newHistorical.save()
 }
 
-historicalFunctions.newPriceToHistorical = (code, price, iva) => {
+historicalFunctions.newPriceToHistorical = (product_id, price, iva) => {
     const newHistoricalPrice = new HistoricalPrice({
         price,
         iva,
         date: new Date()
     });
     return Historical.findOneAndUpdate(
-        { code },
+        { product_id },
         {
             $push:
                 { historicalPrices: newHistoricalPrice }
         })
 }
 
-historicalFunctions.getProductHistorical = (code) => {
-    return Historical.findOne({code})
+historicalFunctions.getProductHistorical = (product_id) => {
+    return Historical.findOne({product_id})
 }
 
 

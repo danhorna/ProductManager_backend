@@ -26,7 +26,7 @@ productsCtrl.newList = async (req, res) => {
                 withoutchanges++;
             else {
                 try {
-                    await newPriceToHistorical(product.code, product.price, product.iva);
+                    await newPriceToHistorical(productdb[0]._id, product.price, product.iva);
                     await updateProductPriceByCode(product.code, product.price, product.iva);
                     updated++;
                 }
@@ -37,8 +37,8 @@ productsCtrl.newList = async (req, res) => {
         }
         else {
             try {
-                await newProduct(product);
-                await newHistorical(product.code, product.price, product.iva);
+                let newProd = await newProduct(product);
+                await newHistorical(newProd._id, product.price, product.iva);
                 created++;
             }
             catch (err) {

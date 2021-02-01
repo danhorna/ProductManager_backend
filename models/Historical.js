@@ -2,7 +2,7 @@ const { HistoricalPricesSchema } = require('./HistoricalPrices')
 const { Schema, model } = require('mongoose');
 
 const HistoricalSchema = new Schema({
-    code: {
+    product_id: {
         type: String,
         required: true
     },
