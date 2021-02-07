@@ -6,16 +6,17 @@ productFunctions.getAllProducts = () => {
 }
 
 productFunctions.getProductById = (productid) => {
-    return Product.findOne({_id: productid})
+    return Product.findOne({ _id: productid })
 }
 
-productFunctions.newProduct = (product) => {
+productFunctions.newProduct = (product, listDate) => {
     const { code, name, price, iva } = product;
     const newProduct = new Product({
         code,
         name,
         price,
-        iva
+        iva,
+        lastUpdate: listDate
     });
     return newProduct.save();
 }
@@ -24,10 +25,17 @@ productFunctions.findProductByCode = (productCode) => {
     return Product.find({ code: productCode });
 }
 
-productFunctions.updateProductPriceByCode = (code, price, iva) => {
+productFunctions.updateProductByCode = (code, price, iva, lastUpdate) => {
     return Product.findOneAndUpdate(
         { code },
-        { price, iva }
+        { price, iva, lastUpdate }
+    )
+}
+
+productFunctions.updateDateByCode = (code, date) => {
+    return Product.findOneAndUpdate(
+        { code },
+        { lastUpdate: date }
     )
 }
 

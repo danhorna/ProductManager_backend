@@ -16,6 +16,10 @@ const ProductSchema = new Schema({
     iva: {
         type: Number,
         required: true
+    },
+    lastUpdate: {
+        type: Date,
+        required: true
     }
 })
 
